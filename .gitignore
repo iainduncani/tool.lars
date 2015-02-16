@@ -14,3 +14,7 @@ build
 */bin-test
 .project
 .settings
+
+# Emacs temporary files
+*~
+
