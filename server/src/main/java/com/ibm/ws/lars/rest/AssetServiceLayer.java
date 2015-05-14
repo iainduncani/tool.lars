@@ -167,7 +167,16 @@ public class AssetServiceLayer {
     }
 
     private Attachment createAttachment(String assetId, String name, Attachment attachmentMetadata, String contentType,
-                                        InputStream attachmentContentStream) throws InvalidJsonAssetException, AssetPersistenceException {
+                                        InputStream attachmentContentStream) throws InvalidJsonAssetException, AssetPersistenceException, NonExistentArtefactException {
+
+        // Check that the parent exists
+        try {
+            persistenceBean.retrieveAsset(assetId);
+        } catch (NonExistentArtefactException e) {
+            // The message from the PersistenceLayer is unhelpful in this context, so send back a better one
+            throw new NonExistentArtefactException("The parent asset for this attachment (id="
+                                                   + assetId + ") does not exist in the repository.");
+        }
 
         // Add necessary fields to the attachment (JSON) metadata
         if (attachmentMetadata.get_id() == null) {
@@ -200,7 +209,7 @@ public class AssetServiceLayer {
     }
 
     public Attachment createAttachmentWithContent(String assetId, String name, Attachment attachmentMetadata, String contentType,
-                                                  InputStream attachmentContentStream) throws InvalidJsonAssetException, AssetPersistenceException {
+                                                  InputStream attachmentContentStream) throws InvalidJsonAssetException, AssetPersistenceException, NonExistentArtefactException {
 
         // The attachment has content, so the URL must not be set, and the
         // linkType
@@ -230,9 +239,10 @@ public class AssetServiceLayer {
      * @return
      * @throws InvalidJsonAssetException
      * @throws AssetPersistenceException
+     * @throws NonExistentArtefactException
      */
     public Attachment createAttachmentNoContent(String assetId, String name, Attachment attachmentMetadata) throws InvalidJsonAssetException,
-            AssetPersistenceException {
+            AssetPersistenceException, NonExistentArtefactException {
 
         // There is no content, so an external URL must be set, and the link
         // type must be DIRECT or WEB_PAGE

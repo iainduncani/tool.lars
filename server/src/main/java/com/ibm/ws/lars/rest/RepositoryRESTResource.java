@@ -256,7 +256,7 @@ public class RepositoryRESTResource {
                                                 @PathParam("assetId") String assetId,
                                                 @Context HttpServletRequest request,
                                                 BufferedInMultiPart inMultiPart
-            ) throws InvalidJsonAssetException, InvalidIdException, AssetPersistenceException {
+            ) throws InvalidJsonAssetException, InvalidIdException, AssetPersistenceException, NonExistentArtefactException {
 
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("createAttachmentWithContent called, name: " + name + " assetId: " + assetId);
@@ -295,7 +295,7 @@ public class RepositoryRESTResource {
     public Response createAttachmentNoContent(@QueryParam("name") String name,
                                               @PathParam("assetId") String assetId,
                                               @Context HttpServletRequest request,
-                                              String bodyJSON) throws InvalidJsonAssetException, InvalidIdException, AssetPersistenceException {
+                                              String bodyJSON) throws InvalidJsonAssetException, InvalidIdException, AssetPersistenceException, NonExistentArtefactException {
 
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("createAttachmentNoContent called, name: " + name
@@ -498,7 +498,7 @@ public class RepositoryRESTResource {
      * Remove URL encoding from both the keys and values of the supplied map. This will deal with
      * both % encoding and + for spaces. Uses URLDecoder ( {@link URLDecoder#decode(String, String)}
      * )
-     * 
+     *
      * @param params
      */
     private static void decodeParams(MultivaluedMap<String, String> params) {
